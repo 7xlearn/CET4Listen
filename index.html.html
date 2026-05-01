@@ -1,0 +1,2288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>疯狂听抄 - 让你不再恐惧听力</title>
+    <style>
+        :root {
+            --primary: #4A6CF7;
+            --primary-dark: #3651d5;
+            --primary-light: #eef1ff;
+            --bg: #f5f6fa;
+            --surface: #ffffff;
+            --surface-alt: #f8f9fc;
+            --text: #1e1e2e;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --border-light: #f0f1f5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --orange: #f97316;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-xs: 6px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+            --transition: 0.2s ease;
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'Monaco', 'Noto Sans Mono', monospace;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============ TOP BAR ============ */
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            flex-shrink: 0;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .topbar .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .topbar .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4A6CF7, #6d8dfb);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .topbar .logo-text {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--text);
+            white-space: nowrap;
+        }
+        .topbar .trial-badge {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            font-size: 0.8rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #fcd34d;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+        .topbar .trial-badge:hover {
+            background: linear-gradient(135deg, #fde68a, #fcd34d);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+        }
+        .topbar .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.35);
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: var(--surface);
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+        .btn-outline:hover {
+            background: var(--primary-light);
+        }
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            border-radius: 16px;
+        }
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        .btn-icon:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* ============ MAIN LAYOUT ============ */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow: hidden;
+            transition: transform 0.3s ease, width 0.3s ease;
+            z-index: 50;
+        }
+        .sidebar.collapsed {
+            width: 0;
+            min-width: 0;
+            border-right: none;
+            overflow: hidden;
+        }
+        .sidebar-header {
+            padding: 16px 18px 10px;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+        }
+        .sidebar-header h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px;
+        }
+        .sidebar-nav .nav-section {
+            margin-bottom: 8px;
+        }
+        .sidebar-nav .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 8px 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+        }
+        .sidebar-nav .nav-section-title .arrow {
+            transition: transform 0.2s;
+            font-size: 0.65rem;
+        }
+        .sidebar-nav .nav-section-title.open .arrow {
+            transform: rotate(90deg);
+        }
+        .sidebar-nav .nav-item {
+            padding: 9px 12px;
+            border-radius: var(--radius-xs);
+            cursor: pointer;
+            font-size: 0.88rem;
+            transition: var(--transition);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 2px 0;
+            position: relative;
+        }
+        .sidebar-nav .nav-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .sidebar-nav .nav-item.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .sidebar-nav .nav-item .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .sidebar-nav .nav-item.active .dot {
+            opacity: 1;
+        }
+        .sidebar-nav .nav-sub-items {
+            padding-left: 16px;
+        }
+        .sidebar-nav .nav-sub-items.collapsed {
+            display: none;
+        }
+        .sidebar-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-light);
+            flex-shrink: 0;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .sidebar-toggle {
+            position: absolute;
+            left: var(--sidebar-width);
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 60;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+            width: 24px;
+            height: 48px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: left 0.3s ease;
+            font-size: 0.7rem;
+        }
+        .sidebar.collapsed~.sidebar-toggle {
+            left: 0;
+        }
+
+        /* ============ CONTENT AREA ============ */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg);
+            position: relative;
+        }
+        .content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Player Card */
+        .player-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        .player-card .material-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+        .player-card .material-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .player-controls .play-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(74, 108, 247, 0.3);
+        }
+        .player-controls .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(74, 108, 247, 0.4);
+        }
+        .player-controls .play-btn.playing {
+            background: var(--danger);
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+        }
+        .speed-selector {
+            display: flex;
+            gap: 4px;
+            background: var(--surface-alt);
+            border-radius: 20px;
+            padding: 4px;
+            border: 1px solid var(--border);
+        }
+        .speed-selector button {
+            padding: 6px 12px;
+            border-radius: 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .speed-selector button.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: var(--shadow-sm);
+        }
+        .speed-selector button:hover:not(.active) {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .loop-info {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface-alt);
+            padding: 6px 12px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+        .loop-info select {
+            border: none;
+            background: transparent;
+            font-size: 0.82rem;
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 500;
+            outline: none;
+        }
+        .progress-bar-wrap {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.15s linear;
+            width: 0%;
+        }
+        .time-display {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            white-space: nowrap;
+            min-width: 85px;
+            text-align: center;
+        }
+
+        /* Dictation Card */
+        .dictation-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 200px;
+        }
+        .dictation-card h4 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dictation-input {
+            width: 100%;
+            flex: 1;
+            min-height: 120px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            font-size: 1rem;
+            font-family: var(--font-mono);
+            resize: vertical;
+            transition: var(--transition);
+            background: var(--surface-alt);
+            color: var(--text);
+            line-height: 1.8;
+        }
+        .dictation-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+            background: #fff;
+        }
+        .dictation-input::placeholder {
+            color: #c5c9d2;
+        }
+        .dictation-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .word-count {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-left: auto;
+            align-self: center;
+        }
+
+        /* Result Card */
+        .result-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            display: none;
+        }
+        .result-card.show {
+            display: block;
+        }
+        .result-card h4 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .result-comparison {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .result-col {
+            flex: 1;
+            min-width: 220px;
+            background: var(--surface-alt);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            font-size: 0.9rem;
+            line-height: 1.9;
+            font-family: var(--font-mono);
+            border: 1px solid var(--border-light);
+        }
+        .result-col .label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .correct-word {
+            color: var(--success);
+            font-weight: 600;
+        }
+        .wrong-word {
+            color: var(--danger);
+            font-weight: 600;
+            text-decoration: line-through;
+            text-decoration-color: #fca5a5;
+        }
+        .missing-word {
+            color: #d1d5db;
+            text-decoration: line-through;
+        }
+        .extra-word {
+            color: var(--orange);
+            font-weight: 600;
+            background: #fff7ed;
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .score-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 8px 0;
+        }
+        .score-excellent {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .score-good {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .score-needs-work {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ============ MODALS ============ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 24px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+        .modal h3 {
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+        .modal .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal .close-btn:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+        .modal .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: var(--radius-xs);
+            margin: 4px 0;
+            background: var(--surface-alt);
+            transition: var(--transition);
+            gap: 10px;
+        }
+        .modal .list-item:hover {
+            background: var(--primary-light);
+        }
+        .modal .list-item .delete-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+        .modal .list-item .delete-btn:hover {
+            background: #fee2e2;
+        }
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 30px;
+            font-size: 0.9rem;
+        }
+
+        /* ============ TOAST ============ */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e1e2e;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 300;
+            transition: transform 0.3s ease;
+            pointer-events: none;
+            box-shadow: var(--shadow-lg);
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 150;
+                transform: translateX(-100%);
+                box-shadow: var(--shadow-lg);
+                width: 280px;
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .sidebar-toggle {
+                display: flex;
+                position: fixed;
+                left: 0;
+                top: 50%;
+                z-index: 160;
+                border-radius: 0 8px 8px 0;
+                border-left: none;
+            }
+            .content-scroll {
+                padding: 12px 10px;
+            }
+            .player-controls {
+                gap: 8px;
+            }
+            .speed-selector button {
+                padding: 4px 8px;
+                font-size: 0.75rem;
+            }
+            .result-comparison {
+                flex-direction: column;
+            }
+            .topbar {
+                padding: 8px 12px;
+                gap: 8px;
+            }
+            .topbar .logo-text {
+                font-size: 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .player-controls .play-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            .speed-selector {
+                gap: 2px;
+            }
+            .speed-selector button {
+                padding: 3px 7px;
+                font-size: 0.7rem;
+            }
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.78rem;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* Upload zone */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--surface-alt);
+            color: var(--text-secondary);
+        }
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .upload-zone input {
+            display: none;
+        }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-light);
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .setting-row label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .setting-row select,
+        .setting-row input[type="number"] {
+            padding: 6px 10px;
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+            background: var(--surface);
+            outline: none;
+        }
+        .setting-row select:focus,
+        .setting-row input:focus {
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== TOP BAR ==================== -->
+    <div class="topbar">
+        <div class="logo-area">
+            <div class="logo-icon">🎧</div>
+            <span class="logo-text">疯狂听抄</span>
+        </div>
+        <span class="trial-badge" id="trialBadge" title="点击查看试用信息">🎁 试用一天</span>
+        <div class="user-actions">
+            <button class="btn-icon" id="btnVocab" title="生词本">📖</button>
+            <button class="btn-icon" id="btnSentences" title="句子收藏">⭐</button>
+            <button class="btn-icon" id="btnHistory" title="听力记录">📋</button>
+            <button class="btn-icon" id="btnSettings" title="设置">⚙️</button>
+            <button class="btn btn-primary btn-sm" id="btnTrial">立即开通</button>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN CONTAINER ==================== -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>📚 素材库</h3>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- 备考素材 -->
+                <div class="nav-section">
+                    <div class="nav-section-title open" data-section="exam">
+                        <span class="arrow">▶</span> 备考素材
+                    </div>
+                    <div class="nav-sub-items" data-section="exam">
+                        <div class="nav-item active" data-material="gaokao">高考听力</div>
+                        <div class="nav-item" data-material="cet4">四级听力</div>
+                        <div class="nav-item" data-material="cet6">六级听力</div>
+                        <div class="nav-item" data-material="toefl">托福雅思</div>
+                        <div class="nav-item" data-material="bec">BEC商务</div>
+                    </div>
+                </div>
+                <!-- 经典素材 -->
+                <div class="nav-section">
+                    <div class="nav-section-title open" data-section="classic">
+                        <span class="arrow">▶</span> 经典素材
+                    </div>
+                    <div class="nav-sub-items" data-section="classic">
+                        <div class="nav-item" data-material="bbc6min">BBC六分钟</div>
+                        <div class="nav-item" data-material="ted">TED-ED</div>
+                        <div class="nav-item" data-material="science60">科学60秒</div>
+                        <div class="nav-item" data-material="englishpod">Englishpod</div>
+                        <div class="nav-item" data-material="newconcept">新概念英语</div>
+                    </div>
+                </div>
+                <!-- 本地素材 -->
+                <div class="nav-section">
+                    <div class="nav-section-title open" data-section="local">
+                        <span class="arrow">▶</span> 我的素材
+                    </div>
+                    <div class="nav-sub-items" data-section="local" id="localMaterialsList">
+                        <div class="nav-item upload-trigger" style="color:var(--primary);font-weight:500;">📤 上传本地素材</div>
+                    </div>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-sm" id="btnCollapseSidebar">◀ 收起</button>
+            </div>
+        </aside>
+        <button class="sidebar-toggle" id="sidebarToggleBtn" title="展开侧边栏">▶</button>
+
+        <!-- Content -->
+        <div class="content-area" id="contentArea">
+            <div class="content-scroll">
+                <!-- Player Card -->
+                <div class="player-card" id="playerCard">
+                    <div class="material-title" id="currentMaterialTitle">高考听力 - 日常对话</div>
+                    <div class="material-meta" id="currentMaterialMeta">难度：★★☆ | 词数：约80词 | 来源：备考素材</div>
+                    <div class="player-controls">
+                        <button class="play-btn" id="playBtn" title="播放/暂停">▶</button>
+                        <div class="speed-selector" id="speedSelector">
+                            <button data-speed="0.5">0.5x</button>
+                            <button data-speed="0.75">0.75x</button>
+                            <button data-speed="1" class="active">1x</button>
+                            <button data-speed="1.25">1.25x</button>
+                            <button data-speed="1.5">1.5x</button>
+                            <button data-speed="2">2x</button>
+                        </div>
+                        <div class="loop-info">
+                            🔁 播放遍数：
+                            <select id="loopCount">
+                                <option value="1">1遍</option>
+                                <option value="2">2遍</option>
+                                <option value="3" selected>3遍</option>
+                                <option value="5">5遍</option>
+                                <option value="0">无限循环</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-outline btn-sm" id="btnPrevSentence" title="上一句">⏮</button>
+                        <button class="btn btn-outline btn-sm" id="btnNextSentence" title="下一句">⏭</button>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <span class="time-display" id="timeDisplay">00:00 / 00:00</span>
+                        <div class="progress-bar" id="progressBar">
+                            <div class="fill" id="progressFill"></div>
+                        </div>
+                        <span style="font-size:0.78rem;color:var(--text-muted);" id="sentenceIndicator">句 1/6</span>
+                    </div>
+                </div>
+
+                <!-- Dictation Card -->
+                <div class="dictation-card" id="dictationCard">
+                    <h4>✍️ 听写输入区 <span style="font-weight:400;font-size:0.78rem;color:var(--text-muted);">（听完后在此输入）</span></h4>
+                    <textarea class="dictation-input" id="dictationInput" placeholder="在此输入你听到的内容...&#10;提示：播放音频后，仔细聆听并逐句输入。"></textarea>
+                    <div class="dictation-actions">
+                        <button class="btn btn-primary" id="btnSubmit">✅ 提交批改</button>
+                        <button class="btn btn-outline" id="btnClear">🗑 清空</button>
+                        <button class="btn btn-outline" id="btnShowOriginal">👁 显示原文</button>
+                        <span class="word-count" id="wordCount">字数：0</span>
+                    </div>
+                </div>
+
+                <!-- Result Card -->
+                <div class="result-card" id="resultCard">
+                    <h4>📊 批改结果 <span id="scoreDisplay"></span></h4>
+                    <div class="result-comparison">
+                        <div class="result-col">
+                            <div class="label">📝 你的输入</div>
+                            <div id="userTextDisplay"></div>
+                        </div>
+                        <div class="result-col">
+                            <div class="label">📖 原文</div>
+                            <div id="originalTextDisplay"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="btn btn-outline btn-sm" id="btnAddVocab">📖 添加生词到生词本</button>
+                        <button class="btn btn-outline btn-sm" id="btnCollectSentence">⭐ 收藏当前句子</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    <!-- 生词本 -->
+    <div class="modal-overlay" id="vocabModalOverlay">
+        <div class="modal" id="vocabModal">
+            <button class="close-btn" data-close="vocabModalOverlay">✕</button>
+            <h3>📖 生词本</h3>
+            <div id="vocabList"></div>
+            <div style="margin-top:12px;display:flex;gap:8px;">
+                <input type="text" id="newVocabInput" placeholder="添加生词..." style="flex:1;padding:8px 12px;border-radius:20px;border:1px solid var(--border);outline:none;">
+                <button class="btn btn-primary btn-sm" id="btnAddVocabManual">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 句子收藏 -->
+    <div class="modal-overlay" id="sentencesModalOverlay">
+        <div class="modal" id="sentencesModal">
+            <button class="close-btn" data-close="sentencesModalOverlay">✕</button>
+            <h3>⭐ 句子收藏</h3>
+            <div id="sentencesList"></div>
+        </div>
+    </div>
+
+    <!-- 历史记录 -->
+    <div class="modal-overlay" id="historyModalOverlay">
+        <div class="modal" id="historyModal">
+            <button class="close-btn" data-close="historyModalOverlay">✕</button>
+            <h3>📋 听力记录</h3>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <!-- 设置 -->
+    <div class="modal-overlay" id="settingsModalOverlay">
+        <div class="modal" id="settingsModal">
+            <button class="close-btn" data-close="settingsModalOverlay">✕</button>
+            <h3>⚙️ 个性化设置</h3>
+            <div class="setting-row">
+                <label>默认播放遍数</label>
+                <select id="settingDefaultLoop">
+                    <option value="1">1遍</option>
+                    <option value="2">2遍</option>
+                    <option value="3" selected>3遍</option>
+                    <option value="5">5遍</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <label>默认语速</label>
+                <select id="settingDefaultSpeed">
+                    <option value="0.5">0.5x</option>
+                    <option value="0.75">0.75x</option>
+                    <option value="1" selected>1x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <label>句间间隔（秒）</label>
+                <input type="number" id="settingInterval" value="1.5" min="0" max="10" step="0.5" style="width:80px;">
+            </div>
+            <div class="setting-row">
+                <label>自动进入下一句</label>
+                <select id="settingAutoNext">
+                    <option value="1">开启</option>
+                    <option value="0" selected>关闭</option>
+                </select>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnSaveSettings" style="margin-top:12px;">💾 保存设置</button>
+        </div>
+    </div>
+
+    <!-- 上传素材弹窗 -->
+    <div class="modal-overlay" id="uploadModalOverlay">
+        <div class="modal" id="uploadModal">
+            <button class="close-btn" data-close="uploadModalOverlay">✕</button>
+            <h3>📤 上传本地素材</h3>
+            <div class="upload-zone" id="uploadZone">
+                <p>📁 点击或拖拽上传 MP3 文件</p>
+                <p style="font-size:0.75rem;color:var(--text-muted);">支持10分钟以内的MP3音频文件</p>
+                <input type="file" id="uploadFileInput" accept=".mp3,audio/mpeg">
+            </div>
+            <div style="margin-top:12px;">
+                <label style="font-weight:500;font-size:0.9rem;">素材名称</label>
+                <input type="text" id="uploadMaterialName" placeholder="给素材起个名字..." style="width:100%;padding:8px 12px;border-radius:20px;border:1px solid var(--border);outline:none;margin-top:4px;">
+            </div>
+            <div style="margin-top:8px;">
+                <label style="font-weight:500;font-size:0.9rem;">原文文本（可选，用于自动批改）</label>
+                <textarea id="uploadOriginalText" placeholder="输入音频的原文文本，用于后续自动批改对比..." style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);outline:none;min-height:80px;resize:vertical;margin-top:4px;"></textarea>
+            </div>
+            <button class="btn btn-primary" id="btnConfirmUpload" style="margin-top:12px;">✅ 确认添加</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        (function() {
+            // ==================== 数据与状态 ====================
+            const DEFAULT_MATERIALS = {
+                'gaokao': {
+                    id: 'gaokao',
+                    title: '高考听力 - 日常对话',
+                    meta: '难度：★★☆ | 词数：约80词 | 来源：备考素材',
+                    category: 'exam',
+                    type: 'tts',
+                    sentences: [
+                        "Hello, what can I do for you?",
+                        "I'd like to buy a pair of running shoes.",
+                        "What size do you wear?",
+                        "Size 42, please. And I prefer blue or black.",
+                        "Let me check. We have these two styles in size 42.",
+                        "How much are they?",
+                        "The blue ones are 299 yuan, and the black ones are 359 yuan.",
+                        "I'll take the blue ones. Can I try them on first?",
+                        "Of course. The fitting room is right over there.",
+                        "Thank you. They fit perfectly. I'll take them."
+                    ],
+                    fullText: "Hello, what can I do for you?\nI'd like to buy a pair of running shoes.\nWhat size do you wear?\nSize 42, please. And I prefer blue or black.\nLet me check. We have these two styles in size 42.\nHow much are they?\nThe blue ones are 299 yuan, and the black ones are 359 yuan.\nI'll take the blue ones. Can I try them on first?\nOf course. The fitting room is right over there.\nThank you. They fit perfectly. I'll take them."
+                },
+                'cet4': {
+                    id: 'cet4',
+                    title: '四级听力 - 校园生活',
+                    meta: '难度：★★★ | 词数：约100词 | 来源：备考素材',
+                    category: 'exam',
+                    type: 'tts',
+                    sentences: [
+                        "Good morning, Professor Johnson.",
+                        "Good morning. How can I help you?",
+                        "I have a question about the assignment due next Monday.",
+                        "Yes, the research paper on environmental protection.",
+                        "Exactly. I'm having trouble finding reliable sources.",
+                        "Have you checked the university's online database?",
+                        "I did, but most articles are quite technical.",
+                        "I suggest starting with the textbook's reference section.",
+                        "That's a great idea. I'll look into it right away.",
+                        "And don't hesitate to visit during my office hours if you need more help."
+                    ],
+                    fullText: "Good morning, Professor Johnson.\nGood morning. How can I help you?\nI have a question about the assignment due next Monday.\nYes, the research paper on environmental protection.\nExactly. I'm having trouble finding reliable sources.\nHave you checked the university's online database?\nI did, but most articles are quite technical.\nI suggest starting with the textbook's reference section.\nThat's a great idea. I'll look into it right away.\nAnd don't hesitate to visit during my office hours if you need more help."
+                },
+                'cet6': {
+                    id: 'cet6',
+                    title: '六级听力 - 学术讲座',
+                    meta: '难度：★★★★ | 词数：约120词 | 来源：备考素材',
+                    category: 'exam',
+                    type: 'tts',
+                    sentences: [
+                        "Today we're going to discuss the impact of climate change on coastal cities.",
+                        "Rising sea levels pose a significant threat to millions of people worldwide.",
+                        "According to recent studies, sea levels have risen by about 20 centimeters since 1900.",
+                        "This may not sound like much, but the consequences are severe.",
+                        "Coastal erosion, flooding, and saltwater intrusion are among the major concerns.",
+                        "Some cities have already started implementing adaptation strategies.",
+                        "For example, Rotterdam has built innovative flood defense systems.",
+                        "Meanwhile, Venice has invested in mobile barriers to protect against high tides.",
+                        "The key question is whether developing nations can afford such measures.",
+                        "International cooperation will be essential in addressing this global challenge."
+                    ],
+                    fullText: "Today we're going to discuss the impact of climate change on coastal cities.\nRising sea levels pose a significant threat to millions of people worldwide.\nAccording to recent studies, sea levels have risen by about 20 centimeters since 1900.\nThis may not sound like much, but the consequences are severe.\nCoastal erosion, flooding, and saltwater intrusion are among the major concerns.\nSome cities have already started implementing adaptation strategies.\nFor example, Rotterdam has built innovative flood defense systems.\nMeanwhile, Venice has invested in mobile barriers to protect against high tides.\nThe key question is whether developing nations can afford such measures.\nInternational cooperation will be essential in addressing this global challenge."
+                },
+                'toefl': {
+                    id: 'toefl',
+                    title: '托福雅思 - 学术讨论',
+                    meta: '难度：★★★★★ | 词数：约130词 | 来源：备考素材',
+                    category: 'exam',
+                    type: 'tts',
+                    sentences: [
+                        "The Industrial Revolution marked a turning point in human history.",
+                        "It began in Britain in the late 18th century and spread across Europe.",
+                        "New manufacturing processes transformed agriculture and industry.",
+                        "The steam engine played a crucial role in this transformation.",
+                        "Urbanization accelerated as people moved from rural areas to cities.",
+                        "Working conditions in factories were often harsh and dangerous.",
+                        "However, living standards gradually improved over the following decades.",
+                        "The revolution also led to significant environmental changes.",
+                        "Scholars continue to debate its long-term effects on society.",
+                        "What remains clear is that it fundamentally altered the course of civilization."
+                    ],
+                    fullText: "The Industrial Revolution marked a turning point in human history.\nIt began in Britain in the late 18th century and spread across Europe.\nNew manufacturing processes transformed agriculture and industry.\nThe steam engine played a crucial role in this transformation.\nUrbanization accelerated as people moved from rural areas to cities.\nWorking conditions in factories were often harsh and dangerous.\nHowever, living standards gradually improved over the following decades.\nThe revolution also led to significant environmental changes.\nScholars continue to debate its long-term effects on society.\nWhat remains clear is that it fundamentally altered the course of civilization."
+                },
+                'bec': {
+                    id: 'bec',
+                    title: 'BEC商务 - 会议对话',
+                    meta: '难度：★★★ | 词数：约90词 | 来源：备考素材',
+                    category: 'exam',
+                    type: 'tts',
+                    sentences: [
+                        "Let's begin with the quarterly sales report.",
+                        "Our revenue has increased by 15% compared to last quarter.",
+                        "That's excellent news. Which division performed best?",
+                        "The Asia-Pacific region showed the strongest growth at 22%.",
+                        "What about the European market?",
+                        "Europe remained stable with a modest 5% increase.",
+                        "We need to discuss our marketing strategy for the next quarter.",
+                        "I propose we allocate more resources to digital advertising.",
+                        "That aligns with current market trends.",
+                        "Let's schedule a follow-up meeting for next Wednesday."
+                    ],
+                    fullText: "Let's begin with the quarterly sales report.\nOur revenue has increased by 15% compared to last quarter.\nThat's excellent news. Which division performed best?\nThe Asia-Pacific region showed the strongest growth at 22%.\nWhat about the European market?\nEurope remained stable with a modest 5% increase.\nWe need to discuss our marketing strategy for the next quarter.\nI propose we allocate more resources to digital advertising.\nThat aligns with current market trends.\nLet's schedule a follow-up meeting for next Wednesday."
+                },
+                'bbc6min': {
+                    id: 'bbc6min',
+                    title: 'BBC六分钟 - 科技话题',
+                    meta: '难度：★★★ | 词数：约110词 | 来源：经典素材',
+                    category: 'classic',
+                    type: 'tts',
+                    sentences: [
+                        "Welcome to 6 Minute English. Today we're talking about artificial intelligence.",
+                        "AI is transforming the way we live and work.",
+                        "From virtual assistants to self-driving cars, the applications are endless.",
+                        "But some people worry about the ethical implications.",
+                        "Will robots eventually replace human workers?",
+                        "Experts say that while some jobs may disappear, new ones will emerge.",
+                        "The key is to adapt and acquire new skills.",
+                        "Education systems need to evolve to prepare students for this future.",
+                        "Critical thinking and creativity will become even more valuable.",
+                        "What do you think the future holds for AI and humanity?"
+                    ],
+                    fullText: "Welcome to 6 Minute English. Today we're talking about artificial intelligence.\nAI is transforming the way we live and work.\nFrom virtual assistants to self-driving cars, the applications are endless.\nBut some people worry about the ethical implications.\nWill robots eventually replace human workers?\nExperts say that while some jobs may disappear, new ones will emerge.\nThe key is to adapt and acquire new skills.\nEducation systems need to evolve to prepare students for this future.\nCritical thinking and creativity will become even more valuable.\nWhat do you think the future holds for AI and humanity?"
+                },
+                'ted': {
+                    id: 'ted',
+                    title: 'TED-ED - 科学探索',
+                    meta: '难度：★★★★ | 词数：约125词 | 来源：经典素材',
+                    category: 'classic',
+                    type: 'tts',
+                    sentences: [
+                        "Have you ever wondered how the human brain processes information?",
+                        "The brain contains approximately 86 billion neurons.",
+                        "Each neuron can form thousands of connections with other neurons.",
+                        "This creates an incredibly complex network of neural pathways.",
+                        "When you learn something new, your brain physically changes.",
+                        "New synapses are formed, and existing ones are strengthened.",
+                        "This process is called neuroplasticity.",
+                        "It explains why practice and repetition are so important for learning.",
+                        "The more you engage with new information, the stronger these connections become.",
+                        "So the next time you're studying, remember that your brain is literally growing."
+                    ],
+                    fullText: "Have you ever wondered how the human brain processes information?\nThe brain contains approximately 86 billion neurons.\nEach neuron can form thousands of connections with other neurons.\nThis creates an incredibly complex network of neural pathways.\nWhen you learn something new, your brain physically changes.\nNew synapses are formed, and existing ones are strengthened.\nThis process is called neuroplasticity.\nIt explains why practice and repetition are so important for learning.\nThe more you engage with new information, the stronger these connections become.\nSo the next time you're studying, remember that your brain is literally growing."
+                },
+                'science60': {
+                    id: 'science60',
+                    title: '科学60秒 - 简短快讯',
+                    meta: '难度：★★★★ | 词数：约80词 | 来源：经典素材',
+                    category: 'classic',
+                    type: 'tts',
+                    sentences: [
+                        "Scientists have discovered a new species of deep-sea fish.",
+                        "The creature was found at a depth of over 3000 meters.",
+                        "It has bioluminescent organs that glow in the darkness.",
+                        "This adaptation helps it attract prey and communicate.",
+                        "The discovery was made during an expedition in the Pacific Ocean.",
+                        "Researchers used advanced submersible technology for the exploration.",
+                        "This finding highlights how little we know about the deep sea.",
+                        "It's estimated that over 80% of ocean species remain undiscovered."
+                    ],
+                    fullText: "Scientists have discovered a new species of deep-sea fish.\nThe creature was found at a depth of over 3000 meters.\nIt has bioluminescent organs that glow in the darkness.\nThis adaptation helps it attract prey and communicate.\nThe discovery was made during an expedition in the Pacific Ocean.\nResearchers used advanced submersible technology for the exploration.\nThis finding highlights how little we know about the deep sea.\nIt's estimated that over 80% of ocean species remain undiscovered."
+                },
+                'englishpod': {
+                    id: 'englishpod',
+                    title: 'Englishpod - 情景对话',
+                    meta: '难度：★★☆ | 词数：约70词 | 来源：经典素材',
+                    category: 'classic',
+                    type: 'tts',
+                    sentences: [
+                        "Hey, how was your weekend?",
+                        "It was great! I went hiking with some friends.",
+                        "That sounds fun. Where did you go?",
+                        "We went to the national park near the lake.",
+                        "The weather was perfect for outdoor activities.",
+                        "We saw some amazing wildlife along the trail.",
+                        "I should join you next time.",
+                        "Definitely! We're planning another trip in two weeks.",
+                        "Count me in. I'll bring some snacks.",
+                        "Awesome. I'll send you the details later."
+                    ],
+                    fullText: "Hey, how was your weekend?\nIt was great! I went hiking with some friends.\nThat sounds fun. Where did you go?\nWe went to the national park near the lake.\nThe weather was perfect for outdoor activities.\nWe saw some amazing wildlife along the trail.\nI should join you next time.\nDefinitely! We're planning another trip in two weeks.\nCount me in. I'll bring some snacks.\nAwesome. I'll send you the details later."
+                },
+                'newconcept': {
+                    id: 'newconcept',
+                    title: '新概念英语 - 经典篇章',
+                    meta: '难度：★★☆ | 词数：约90词 | 来源：经典素材',
+                    category: 'classic',
+                    type: 'tts',
+                    sentences: [
+                        "Last week I went to the theatre.",
+                        "I had a very good seat.",
+                        "The play was very interesting.",
+                        "I did not enjoy it.",
+                        "A young man and a young woman were sitting behind me.",
+                        "They were talking loudly.",
+                        "I could not hear the actors.",
+                        "I turned around and looked at them.",
+                        "They did not pay any attention.",
+                        "In the end, I could not bear it and changed my seat."
+                    ],
+                    fullText: "Last week I went to the theatre.\nI had a very good seat.\nThe play was very interesting.\nI did not enjoy it.\nA young man and a young woman were sitting behind me.\nThey were talking loudly.\nI could not hear the actors.\nI turned around and looked at them.\nThey did not pay any attention.\nIn the end, I could not bear it and changed my seat."
+                }
+            };
+
+            // 应用状态
+            let state = {
+                currentMaterialId: 'gaokao',
+                currentSentenceIndex: 0,
+                isPlaying: false,
+                speed: 1,
+                loopCount: 3,
+                currentLoop: 0,
+                sentenceInterval: 1.5,
+                autoNext: false,
+                isTTSMode: true,
+                audioElement: null, // 用于MP3模式
+                mp3BlobURL: null,
+                mp3SentenceTimestamps: [], // [{start, end}]
+                totalDuration: 0,
+                progressInterval: null,
+                trialStartDate: null,
+                vocabList: [],
+                sentencesCollection: [],
+                historyList: [],
+                localMaterials: {},
+                settings: {
+                    defaultLoop: 3,
+                    defaultSpeed: 1,
+                    sentenceInterval: 1.5,
+                    autoNext: false,
+                }
+            };
+
+            // ==================== 工具函数 ====================
+            function $(sel) { return document.querySelector(sel); }
+
+            function $$(sel) { return document.querySelectorAll(sel); }
+
+            function showToast(msg, duration = 2000) {
+                const toast = $('#toast');
+                toast.textContent = msg;
+                toast.classList.add('show');
+                clearTimeout(toast._timeout);
+                toast._timeout = setTimeout(() => toast.classList.remove('show'), duration);
+            }
+
+            function saveToStorage(key, data) {
+                try { localStorage.setItem('dictation_' + key, JSON.stringify(data)); } catch (e) {}
+            }
+
+            function loadFromStorage(key, defaultVal) {
+                try {
+                    const d = localStorage.getItem('dictation_' + key);
+                    return d ? JSON.parse(d) : defaultVal;
+                } catch (e) { return defaultVal; }
+            }
+
+            function formatTime(seconds) {
+                if (!isFinite(seconds) || seconds < 0) seconds = 0;
+                const m = Math.floor(seconds / 60);
+                const s = Math.floor(seconds % 60);
+                return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            }
+
+            // 英文句子分割
+            function splitSentences(text) {
+                return text.match(/[^.!?\n]+[.!?]*(\n|$)?/g)?.map(s => s.trim()).filter(s => s.length > 0) || [
+                    text.trim()
+                ];
+            }
+
+            // ==================== 存储管理 ====================
+            function loadAllData() {
+                state.vocabList = loadFromStorage('vocabList', []);
+                state.sentencesCollection = loadFromStorage('sentencesCollection', []);
+                state.historyList = loadFromStorage('historyList', []);
+                state.localMaterials = loadFromStorage('localMaterials', {});
+                state.settings = loadFromStorage('settings', {
+                    defaultLoop: 3,
+                    defaultSpeed: 1,
+                    sentenceInterval: 1.5,
+                    autoNext: false,
+                });
+                state.trialStartDate = loadFromStorage('trialStartDate', null);
+                if (!state.trialStartDate) {
+                    state.trialStartDate = new Date().toISOString();
+                    saveToStorage('trialStartDate', state.trialStartDate);
+                }
+                // 应用设置
+                state.loopCount = state.settings.defaultLoop;
+                state.speed = state.settings.defaultSpeed;
+                state.sentenceInterval = state.settings.sentenceInterval;
+                state.autoNext = state.settings.autoNext;
+                $('#loopCount').value = state.loopCount;
+                updateSpeedButtons();
+                $('#settingDefaultLoop').value = state.settings.defaultLoop;
+                $('#settingDefaultSpeed').value = state.settings.defaultSpeed;
+                $('#settingInterval').value = state.settings.sentenceInterval;
+                $('#settingAutoNext').value = state.settings.autoNext ? '1' : '0';
+            }
+
+            function saveAllData() {
+                saveToStorage('vocabList', state.vocabList);
+                saveToStorage('sentencesCollection', state.sentencesCollection);
+                saveToStorage('historyList', state.historyList);
+                saveToStorage('localMaterials', state.localMaterials);
+                saveToStorage('settings', state.settings);
+                saveToStorage('trialStartDate', state.trialStartDate);
+            }
+
+            // ==================== 音频播放 ====================
+            function stopAllAudio() {
+                // 停止TTS
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
+                // 停止MP3
+                if (state.audioElement) {
+                    state.audioElement.pause();
+                    state.audioElement.currentTime = 0;
+                }
+                if (state.progressInterval) {
+                    clearInterval(state.progressInterval);
+                    state.progressInterval = null;
+                }
+                state.isPlaying = false;
+                state.currentLoop = 0;
+                updatePlayButton();
+                $('#progressFill').style.width = '0%';
+                $('#timeDisplay').textContent = '00:00 / 00:00';
+            }
+
+            function getCurrentMaterial() {
+                const allMaterials = { ...DEFAULT_MATERIALS, ...state.localMaterials };
+                return allMaterials[state.currentMaterialId] || DEFAULT_MATERIALS['gaokao'];
+            }
+
+            function updatePlayButton() {
+                const btn = $('#playBtn');
+                if (state.isPlaying) {
+                    btn.textContent = '⏸';
+                    btn.classList.add('playing');
+                } else {
+                    btn.textContent = '▶';
+                    btn.classList.remove('playing');
+                }
+            }
+
+            function updateSpeedButtons() {
+                $$('#speedSelector button').forEach(b => {
+                    b.classList.toggle('active', parseFloat(b.dataset.speed) === state.speed);
+                });
+            }
+
+            function playCurrentSentenceTTS() {
+                if (!window.speechSynthesis) {
+                    showToast('您的浏览器不支持语音合成，请上传MP3文件使用');
+                    return;
+                }
+                window.speechSynthesis.cancel();
+                const material = getCurrentMaterial();
+                if (!material.sentences || material.sentences.length === 0) return;
+                const sentence = material.sentences[state.currentSentenceIndex];
+                if (!sentence) return;
+
+                state.isPlaying = true;
+                state.currentLoop = 0;
+                updatePlayButton();
+                updateSentenceIndicator();
+
+                function speakOnce() {
+                    return new Promise(resolve => {
+                        const utterance = new SpeechSynthesisUtterance(sentence);
+                        utterance.lang = 'en-US';
+                        utterance.rate = state.speed;
+                        utterance.pitch = 1;
+                        // 尝试选择好的英文语音
+                        const voices = window.speechSynthesis.getVoices();
+                        const enVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) ||
+                            voices.find(v => v.lang.startsWith('en-US')) ||
+                            voices.find(v => v.lang.startsWith('en'));
+                        if (enVoice) utterance.voice = enVoice;
+
+                        utterance.onend = () => resolve();
+                        utterance.onerror = () => resolve(); // 出错也继续
+                        window.speechSynthesis.speak(utterance);
+                    });
+                }
+
+                async function loopSpeech() {
+                    const maxLoops = state.loopCount === 0 ? 999999 : state.loopCount;
+                    for (let i = 0; i < maxLoops; i++) {
+                        if (!state.isPlaying) break;
+                        state.currentLoop = i + 1;
+                        await speakOnce();
+                        if (!state.isPlaying) break;
+                        // 句间间隔
+                        if (i < maxLoops - 1) {
+                            await new Promise(r => setTimeout(r, state.sentenceInterval * 1000));
+                        }
+                        if (!state.isPlaying) break;
+                    }
+                    // 完成当前句子
+                    if (state.isPlaying) {
+                        if (state.autoNext) {
+                            setTimeout(() => {
+                                if (state.isPlaying) nextSentence();
+                            }, state.sentenceInterval * 1000);
+                        } else {
+                            state.isPlaying = false;
+                            updatePlayButton();
+                        }
+                    }
+                }
+                loopSpeech();
+            }
+
+            function playCurrentSentenceMP3() {
+                if (!state.audioElement || !state.mp3BlobURL) {
+                    showToast('请先加载音频文件');
+                    return;
+                }
+                const timestamps = state.mp3SentenceTimestamps;
+                if (timestamps.length === 0 || state.currentSentenceIndex >= timestamps.length) {
+                    // 没有时间戳信息，播放整个音频
+                    state.audioElement.currentTime = 0;
+                    state.audioElement.playbackRate = state.speed;
+                    state.audioElement.play();
+                    state.isPlaying = true;
+                    state.currentLoop = 0;
+                    updatePlayButton();
+                    startProgressTracking();
+                    return;
+                }
+                const ts = timestamps[state.currentSentenceIndex];
+                if (!ts) return;
+                state.audioElement.currentTime = ts.start;
+                state.audioElement.playbackRate = state.speed;
+                state.audioElement.play();
+                state.isPlaying = true;
+                state.currentLoop = 0;
+                updatePlayButton();
+                updateSentenceIndicator();
+                startProgressTracking();
+
+                // 设置循环结束检测
+                const checkEnd = () => {
+                    if (!state.isPlaying || !state.audioElement) return;
+                    if (state.audioElement.currentTime >= ts.end) {
+                        state.currentLoop++;
+                        const maxLoops = state.loopCount === 0 ? 999999 : state.loopCount;
+                        if (state.currentLoop < maxLoops) {
+                            state.audioElement.currentTime = ts.start;
+                            state.audioElement.play();
+                        } else {
+                            state.audioElement.pause();
+                            state.isPlaying = false;
+                            updatePlayButton();
+                            state.audioElement.removeEventListener('timeupdate', checkEnd);
+                            if (state.autoNext) {
+                                setTimeout(() => nextSentence(), state.sentenceInterval * 1000);
+                            }
+                        }
+                    }
+                };
+                state.audioElement.addEventListener('timeupdate', checkEnd);
+                // 存储引用以便清理
+                state._mp3CheckEnd = checkEnd;
+            }
+
+            function startProgressTracking() {
+                if (state.progressInterval) clearInterval(state.progressInterval);
+                state.progressInterval = setInterval(() => {
+                    if (state.audioElement && state.isPlaying) {
+                        const dur = state.audioElement.duration || state.totalDuration || 0;
+                        const ct = state.audioElement.currentTime;
+                        $('#timeDisplay').textContent = formatTime(ct) + ' / ' + formatTime(dur);
+                        const pct = dur > 0 ? (ct / dur * 100) : 0;
+                        $('#progressFill').style.width = pct + '%';
+                    } else if (!state.isPlaying && state.audioElement && state.audioElement.paused) {
+                        // 保持进度显示
+                    }
+                }, 150);
+            }
+
+            function stopProgressTracking() {
+                if (state.progressInterval) {
+                    clearInterval(state.progressInterval);
+                    state.progressInterval = null;
+                }
+            }
+
+            function playSentence() {
+                stopAllAudio();
+                const material = getCurrentMaterial();
+                if (material.type === 'tts' || !state.mp3BlobURL) {
+                    state.isTTSMode = true;
+                    playCurrentSentenceTTS();
+                } else {
+                    state.isTTSMode = false;
+                    playCurrentSentenceMP3();
+                }
+            }
+
+            function nextSentence() {
+                const material = getCurrentMaterial();
+                const total = material.sentences ? material.sentences.length : 0;
+                if (state.currentSentenceIndex < total - 1) {
+                    state.currentSentenceIndex++;
+                    updateSentenceIndicator();
+                    if (state.isPlaying) {
+                        stopAllAudio();
+                        playSentence();
+                    } else {
+                        updateSentenceIndicator();
+                        updateProgressForSentence();
+                    }
+                } else {
+                    stopAllAudio();
+                    showToast('已是最后一句');
+                }
+            }
+
+            function prevSentence() {
+                if (state.currentSentenceIndex > 0) {
+                    state.currentSentenceIndex--;
+                    updateSentenceIndicator();
+                    if (state.isPlaying) {
+                        stopAllAudio();
+                        playSentence();
+                    } else {
+                        updateSentenceIndicator();
+                        updateProgressForSentence();
+                    }
+                } else {
+                    showToast('已是第一句');
+                }
+            }
+
+            function updateSentenceIndicator() {
+                const material = getCurrentMaterial();
+                const total = material.sentences ? material.sentences.length : 0;
+                $('#sentenceIndicator').textContent =
+                    `句 ${state.currentSentenceIndex + 1}/${total}`;
+            }
+
+            function updateProgressForSentence() {
+                const material = getCurrentMaterial();
+                const total = material.sentences ? material.sentences.length : 1;
+                const pct = ((state.currentSentenceIndex) / total) * 100;
+                $('#progressFill').style.width = pct + '%';
+                if (!state.isTTSMode && state.audioElement && state.mp3SentenceTimestamps.length > 0) {
+                    const ts = state.mp3SentenceTimestamps[state.currentSentenceIndex];
+                    if (ts) {
+                        $('#timeDisplay').textContent = formatTime(ts.start) + ' / ' + formatTime(state
+                            .totalDuration || 0);
+                    }
+                } else {
+                    $('#timeDisplay').textContent = `句${state.currentSentenceIndex+1} / 共${total}句`;
+                }
+            }
+
+            // ==================== 批改引擎 ====================
+            function compareTexts(userText, originalText) {
+                const userWords = userText.trim().split(/\s+/).filter(w => w.length > 0);
+                const origWords = originalText.trim().split(/\s+/).filter(w => w.length > 0);
+
+                // 使用LCS进行对齐
+                const m = userWords.length;
+                const n = origWords.length;
+                const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+                for (let i = 1; i <= m; i++) {
+                    for (let j = 1; j <= n; j++) {
+                        if (userWords[i - 1].toLowerCase() === origWords[j - 1].toLowerCase()) {
+                            dp[i][j] = dp[i - 1][j - 1] + 1;
+                        } else {
+                            dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                        }
+                    }
+                }
+
+                // 回溯
+                const alignedUser = [];
+                const alignedOrig = [];
+                let i = m,
+                    j = n;
+                const tempUser = [];
+                const tempOrig = [];
+                while (i > 0 || j > 0) {
+                    if (i > 0 && j > 0 && userWords[i - 1].toLowerCase() === origWords[j - 1].toLowerCase()) {
+                        tempUser.unshift({ word: userWords[i - 1], type: 'correct' });
+                        tempOrig.unshift({ word: origWords[j - 1], type: 'correct' });
+                        i--;
+                        j--;
+                    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+                        tempUser.unshift({ word: '', type: 'missing' });
+                        tempOrig.unshift({ word: origWords[j - 1], type: 'normal' });
+                        j--;
+                    } else {
+                        tempUser.unshift({ word: userWords[i - 1], type: 'extra' });
+                        tempOrig.unshift({ word: '', type: 'skipped' });
+                        i--;
+                    }
+                }
+
+                const correctCount = tempUser.filter(w => w.type === 'correct').length;
+                const totalOrig = origWords.length;
+                const accuracy = totalOrig > 0 ? Math.round((correctCount / totalOrig) * 100) : 0;
+
+                return {
+                    userAligned: tempUser,
+                    origAligned: tempOrig,
+                    accuracy,
+                    correctCount,
+                    totalWords: totalOrig,
+                    extraWords: tempUser.filter(w => w.type === 'extra').length,
+                };
+            }
+
+            function renderComparison(result) {
+                const userDisplay = $('#userTextDisplay');
+                const origDisplay = $('#originalTextDisplay');
+                const scoreDisplay = $('#scoreDisplay');
+
+                // 用户输入显示
+                userDisplay.innerHTML = result.userAligned.map(w => {
+                    if (w.type === 'correct') return `<span class="correct-word">${escapeHTML(w.word)}</span>`;
+                    if (w.type === 'extra') return `<span class="extra-word">${escapeHTML(w.word)}</span>`;
+                    if (w.type === 'missing') return '';
+                    return escapeHTML(w.word);
+                }).join(' ');
+
+                // 原文显示
+                origDisplay.innerHTML = result.origAligned.map(w => {
+                    if (w.type === 'correct') return `<span class="correct-word">${escapeHTML(w.word)}</span>`;
+                    if (w.type === 'skipped') return '';
+                    return escapeHTML(w.word);
+                }).join(' ');
+
+                // 评分
+                let scoreClass = 'score-needs-work';
+                let scoreLabel = '需要加油';
+                if (result.accuracy >= 90) { scoreClass = 'score-excellent';
+                    scoreLabel = '优秀！'; } else if (result.accuracy >= 70) { scoreClass = 'score-good';
+                    scoreLabel = '良好'; }
+
+                scoreDisplay.innerHTML =
+                    `<span class="score-badge ${scoreClass}">准确率：${result.accuracy}% - ${scoreLabel}</span>
+                 <span style="font-size:0.8rem;color:var(--text-muted);margin-left:8px;">
+                   正确 ${result.correctCount}/${result.totalWords} 词 | 多余 ${result.extraWords} 词
+                 </span>`;
+
+                $('#resultCard').classList.add('show');
+                $('#resultCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            function escapeHTML(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            // ==================== UI更新 ====================
+            function loadMaterial(materialId) {
+                stopAllAudio();
+                const allMaterials = { ...DEFAULT_MATERIALS, ...state.localMaterials };
+                const material = allMaterials[materialId];
+                if (!material) return;
+
+                state.currentMaterialId = materialId;
+                state.currentSentenceIndex = 0;
+                state.isPlaying = false;
+                state.isTTSMode = (material.type === 'tts' || !state.mp3BlobURL);
+                updatePlayButton();
+                updateSentenceIndicator();
+                $('#progressFill').style.width = '0%';
+                $('#timeDisplay').textContent = '00:00 / 00:00';
+                $('#currentMaterialTitle').textContent = material.title;
+                $('#currentMaterialMeta').textContent = material.meta || '';
+                $('#dictationInput').value = '';
+                $('#wordCount').textContent = '字数：0';
+                $('#resultCard').classList.remove('show');
+                $('#userTextDisplay').innerHTML = '';
+                $('#originalTextDisplay').innerHTML = '';
+                $('#scoreDisplay').innerHTML = '';
+
+                // 更新侧边栏高亮
+                $$('#sidebarNav .nav-item').forEach(el => el.classList.remove('active'));
+                const activeItem = $(`#sidebarNav .nav-item[data-material="${materialId}"]`);
+                if (activeItem) activeItem.classList.add('active');
+
+                // 对于MP3模式，清理旧音频
+                if (state.audioElement && state.mp3BlobURL && material.type !== 'mp3') {
+                    URL.revokeObjectURL(state.mp3BlobURL);
+                    state.mp3BlobURL = null;
+                    state.audioElement = null;
+                    state.mp3SentenceTimestamps = [];
+                }
+                if (material.type === 'mp3' && material.audioData) {
+                    loadMP3FromStored(material);
+                }
+
+                // 更新进度
+                updateProgressForSentence();
+                updateSpeedButtons();
+            }
+
+            function loadMP3FromStored(material) {
+                // 从存储的base64数据恢复MP3
+                if (material.audioData && material.audioData.startsWith('data:audio')) {
+                    fetch(material.audioData)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            if (state.mp3BlobURL) URL.revokeObjectURL(state.mp3BlobURL);
+                            state.mp3BlobURL = URL.createObjectURL(blob);
+                            state.audioElement = new Audio(state.mp3BlobURL);
+                            state.audioElement.addEventListener('loadedmetadata', () => {
+                                state.totalDuration = state.audioElement.duration;
+                                $('#timeDisplay').textContent = '00:00 / ' + formatTime(state
+                                    .totalDuration);
+                            });
+                            state.mp3SentenceTimestamps = material.timestamps || [];
+                            state.isTTSMode = false;
+                        })
+                        .catch(() => {
+                            state.isTTSMode = true;
+                        });
+                }
+            }
+
+            function refreshLocalMaterialsList() {
+                const container = $('#localMaterialsList');
+                const localKeys = Object.keys(state.localMaterials);
+                let html = '<div class="nav-item upload-trigger" style="color:var(--primary);font-weight:500;">📤 上传本地素材</div>';
+                localKeys.forEach(key => {
+                    const mat = state.localMaterials[key];
+                    html +=
+                        `<div class="nav-item" data-material="${key}">📁 ${escapeHTML(mat.title || key)}</div>`;
+                });
+                container.innerHTML = html;
+                // 重新绑定事件
+                container.querySelector('.upload-trigger')?.addEventListener('click', () => openUploadModal());
+                container.querySelectorAll('.nav-item[data-material]').forEach(item => {
+                    item.addEventListener('click', () => loadMaterial(item.dataset.material));
+                });
+            }
+
+            function openUploadModal() {
+                $('#uploadFileInput').value = '';
+                $('#uploadMaterialName').value = '';
+                $('#uploadOriginalText').value = '';
+                $('#uploadModalOverlay').classList.add('open');
+            }
+
+            function handleFileUpload(file) {
+                if (!file || !file.name.toLowerCase().endsWith('.mp3')) {
+                    showToast('请选择MP3格式的音频文件');
+                    return;
+                }
+                if (file.size > 10 * 1024 * 1024) {
+                    showToast('文件大小不能超过10MB');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Data = e.target.result;
+                    const materialName = $('#uploadMaterialName').value.trim() || file.name.replace('.mp3', '');
+                    const originalText = $('#uploadOriginalText').value.trim();
+                    const materialId = 'local_' + Date.now();
+                    const sentences = originalText ? splitSentences(originalText) : [];
+
+                    const newMaterial = {
+                        id: materialId,
+                        title: materialName,
+                        meta: '用户上传 | MP3音频',
+                        category: 'local',
+                        type: 'mp3',
+                        sentences: sentences,
+                        fullText: originalText,
+                        audioData: base64Data,
+                        timestamps: [], // 用户可后续手动标记
+                        fileName: file.name,
+                    };
+
+                    state.localMaterials[materialId] = newMaterial;
+                    saveAllData();
+                    refreshLocalMaterialsList();
+                    loadMaterial(materialId);
+                    $('#uploadModalOverlay').classList.remove('open');
+                    showToast('素材添加成功！');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // ==================== 事件绑定 ====================
+            function bindEvents() {
+                // 播放按钮
+                $('#playBtn').addEventListener('click', () => {
+                    if (state.isPlaying) {
+                        stopAllAudio();
+                    } else {
+                        playSentence();
+                    }
+                });
+
+                // 变速按钮
+                $$('#speedSelector button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        state.speed = parseFloat(btn.dataset.speed);
+                        updateSpeedButtons();
+                        if (state.audioElement) {
+                            state.audioElement.playbackRate = state.speed;
+                        }
+                        // 如果正在TTS播放，重启
+                        if (state.isPlaying && state.isTTSMode) {
+                            stopAllAudio();
+                            playSentence();
+                        }
+                    });
+                });
+
+                // 循环次数
+                $('#loopCount').addEventListener('change', () => {
+                    state.loopCount = parseInt($('#loopCount').value);
+                });
+
+                // 上一句/下一句
+                $('#btnPrevSentence').addEventListener('click', prevSentence);
+                $('#btnNextSentence').addEventListener('click', nextSentence);
+
+                // 键盘快捷键
+                document.addEventListener('keydown', (e) => {
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                    if (e.code === 'Space') {
+                        e.preventDefault();
+                        if (state.isPlaying) stopAllAudio();
+                        else playSentence();
+                    } else if (e.code === 'ArrowRight' && e.ctrlKey) {
+                        e.preventDefault();
+                        nextSentence();
+                    } else if (e.code === 'ArrowLeft' && e.ctrlKey) {
+                        e.preventDefault();
+                        prevSentence();
+                    }
+                });
+
+                // 提交批改
+                $('#btnSubmit').addEventListener('click', () => {
+                    const userText = $('#dictationInput').value.trim();
+                    const material = getCurrentMaterial();
+                    const originalText = material.fullText || material.sentences?.join('\n') || '';
+                    if (!userText) {
+                        showToast('请先输入听写内容');
+                        return;
+                    }
+                    if (!originalText) {
+                        showToast('该素材没有原文，无法自动批改');
+                        return;
+                    }
+                    const result = compareTexts(userText, originalText);
+                    renderComparison(result);
+
+                    // 保存历史记录
+                    const historyEntry = {
+                        id: Date.now(),
+                        materialTitle: material.title,
+                        materialId: state.currentMaterialId,
+                        userText: userText,
+                        originalText: originalText,
+                        accuracy: result.accuracy,
+                        date: new Date().toISOString(),
+                    };
+                    state.historyList.unshift(historyEntry);
+                    if (state.historyList.length > 100) state.historyList = state.historyList.slice(0, 100);
+                    saveAllData();
+                    updateHistoryList();
+                });
+
+                // 清空
+                $('#btnClear').addEventListener('click', () => {
+                    $('#dictationInput').value = '';
+                    $('#wordCount').textContent = '字数：0';
+                    $('#resultCard').classList.remove('show');
+                });
+
+                // 显示原文
+                $('#btnShowOriginal').addEventListener('click', () => {
+                    const material = getCurrentMaterial();
+                    const originalText = material.fullText || material.sentences?.join('\n') || '';
+                    if (originalText) {
+                        $('#originalTextDisplay').innerHTML = escapeHTML(originalText).replace(/\n/g, '<br>');
+                        $('#userTextDisplay').innerHTML =
+                            '<span style="color:var(--text-muted);">（你的输入将在此对比显示）</span>';
+                        $('#scoreDisplay').innerHTML = '';
+                        $('#resultCard').classList.add('show');
+                        $('#resultCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    } else {
+                        showToast('该素材暂未提供原文');
+                    }
+                });
+
+                // 听写输入字数统计
+                $('#dictationInput').addEventListener('input', () => {
+                    const text = $('#dictationInput').value;
+                    const wordCount = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+                    $('#wordCount').textContent = `字数：${wordCount}`;
+                });
+
+                // 添加生词
+                $('#btnAddVocab').addEventListener('click', () => {
+                    const userText = $('#dictationInput').value.trim();
+                    if (!userText) {
+                        showToast('请先输入听写内容');
+                        return;
+                    }
+                    const material = getCurrentMaterial();
+                    const originalText = material.fullText || '';
+                    const result = compareTexts(userText, originalText);
+                    const wrongWords = result.userAligned
+                        .filter(w => w.type === 'extra' && w.word.length > 0)
+                        .map(w => w.word.toLowerCase());
+                    const missingFromOrig = result.origAligned
+                        .filter((w, i) => {
+                            const uw = result.userAligned[i];
+                            return uw && uw.type === 'missing' && w.word.length > 0;
+                        })
+                        .map(w => w.word.toLowerCase());
+                    const allNewWords = [...new Set([...wrongWords, ...missingFromOrig])];
+                    let addedCount = 0;
+                    allNewWords.forEach(word => {
+                        if (!state.vocabList.find(v => v.word.toLowerCase() === word.toLowerCase())) {
+                            state.vocabList.push({ word, date: new Date().toISOString() });
+                            addedCount++;
+                        }
+                    });
+                    saveAllData();
+                    updateVocabList();
+                    showToast(`已添加 ${addedCount} 个生词到生词本`);
+                });
+
+                // 收藏句子
+                $('#btnCollectSentence').addEventListener('click', () => {
+                    const material = getCurrentMaterial();
+                    const sentence = material.sentences?.[state.currentSentenceIndex];
+                    if (sentence) {
+                        if (!state.sentencesCollection.find(s => s.text === sentence)) {
+                            state.sentencesCollection.push({
+                                text: sentence,
+                                source: material.title,
+                                date: new Date().toISOString(),
+                            });
+                            saveAllData();
+                            updateSentencesList();
+                            showToast('句子已收藏 ⭐');
+                        } else {
+                            showToast('该句子已在收藏中');
+                        }
+                    }
+                });
+
+                // 手动添加生词
+                $('#btnAddVocabManual').addEventListener('click', () => {
+                    const input = $('#newVocabInput');
+                    const word = input.value.trim();
+                    if (word && !state.vocabList.find(v => v.word.toLowerCase() === word.toLowerCase())) {
+                        state.vocabList.push({ word, date: new Date().toISOString() });
+                        saveAllData();
+                        updateVocabList();
+                        input.value = '';
+                        showToast('生词已添加');
+                    }
+                });
+                $('#newVocabInput').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') $('#btnAddVocabManual').click();
+                });
+
+                // 弹窗开关
+                $('#btnVocab').addEventListener('click', () => { updateVocabList();
+                    $('#vocabModalOverlay').classList.add('open'); });
+                $('#btnSentences').addEventListener('click', () => { updateSentencesList();
+                    $('#sentencesModalOverlay').classList.add('open'); });
+                $('#btnHistory').addEventListener('click', () => { updateHistoryList();
+                    $('#historyModalOverlay').classList.add('open'); });
+                $('#btnSettings').addEventListener('click', () => { $('#settingsModalOverlay').classList.add(
+                    'open'); });
+
+                // 关闭弹窗
+                $$('.close-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const overlayId = btn.dataset.close;
+                        if (overlayId) $('#' + overlayId).classList.remove('open');
+                    });
+                });
+                $$('.modal-overlay').forEach(overlay => {
+                    overlay.addEventListener('click', (e) => {
+                        if (e.target === overlay) overlay.classList.remove('open');
+                    });
+                });
+
+                // 保存设置
+                $('#btnSaveSettings').addEventListener('click', () => {
+                    state.settings.defaultLoop = parseInt($('#settingDefaultLoop').value);
+                    state.settings.defaultSpeed = parseFloat($('#settingDefaultSpeed').value);
+                    state.settings.sentenceInterval = parseFloat($('#settingInterval').value);
+                    state.settings.autoNext = $('#settingAutoNext').value === '1';
+                    state.loopCount = state.settings.defaultLoop;
+                    state.speed = state.settings.defaultSpeed;
+                    state.sentenceInterval = state.settings.sentenceInterval;
+                    state.autoNext = state.settings.autoNext;
+                    $('#loopCount').value = state.loopCount;
+                    updateSpeedButtons();
+                    saveAllData();
+                    $('#settingsModalOverlay').classList.remove('open');
+                    showToast('设置已保存 ✅');
+                });
+
+                // 侧边栏折叠
+                $('#btnCollapseSidebar').addEventListener('click', () => {
+                    $('#sidebar').classList.add('collapsed');
+                    $('#sidebarToggleBtn').style.display = 'flex';
+                });
+                $('#sidebarToggleBtn').addEventListener('click', () => {
+                    $('#sidebar').classList.remove('collapsed');
+                    $('#sidebarToggleBtn').style.display = 'none';
+                });
+                // 初始状态
+                $('#sidebarToggleBtn').style.display = 'none';
+
+                // 移动端侧边栏
+                if (window.innerWidth <= 768) {
+                    $('#sidebar').classList.add('collapsed');
+                    $('#sidebarToggleBtn').style.display = 'flex';
+                }
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth <= 768) {
+                        $('#sidebar').classList.add('collapsed');
+                        $('#sidebarToggleBtn').style.display = 'flex';
+                    } else {
+                        $('#sidebar').classList.remove('collapsed');
+                        $('#sidebarToggleBtn').style.display = 'none';
+                    }
+                });
+
+                // 侧边栏导航 - 分类折叠
+                $$('.nav-section-title').forEach(title => {
+                    title.addEventListener('click', () => {
+                        title.classList.toggle('open');
+                        const section = title.dataset.section;
+                        const subItems = $(`.nav-sub-items[data-section="${section}"]`);
+                        if (subItems) subItems.classList.toggle('collapsed');
+                    });
+                });
+
+                // 侧边栏素材点击
+                $('#sidebarNav').addEventListener('click', (e) => {
+                    const navItem = e.target.closest('.nav-item[data-material]');
+                    if (navItem) {
+                        loadMaterial(navItem.dataset.material);
+                        if (window.innerWidth <= 768) {
+                            $('#sidebar').classList.add('collapsed');
+                            $('#sidebarToggleBtn').style.display = 'flex';
+                        }
+                    }
+                    if (e.target.closest('.upload-trigger')) {
+                        openUploadModal();
+                    }
+                });
+
+                // 上传弹窗
+                $('#uploadZone').addEventListener('click', () => $('#uploadFileInput').click());
+                $('#uploadFileInput').addEventListener('change', (e) => {
+                    if (e.target.files[0]) handleFileUpload(e.target.files[0]);
+                });
+                // 拖拽上传
+                $('#uploadZone').addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    $('#uploadZone').style.borderColor = 'var(--primary)';
+                    $('#uploadZone').style.background = 'var(--primary-light)';
+                });
+                $('#uploadZone').addEventListener('dragleave', () => {
+                    $('#uploadZone').style.borderColor = 'var(--border)';
+                    $('#uploadZone').style.background = 'var(--surface-alt)';
+                });
+                $('#uploadZone').addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    $('#uploadZone').style.borderColor = 'var(--border)';
+                    $('#uploadZone').style.background = 'var(--surface-alt)';
+                    if (e.dataTransfer.files[0]) handleFileUpload(e.dataTransfer.files[0]);
+                });
+                $('#btnConfirmUpload').addEventListener('click', () => {
+                    const file = $('#uploadFileInput').files[0];
+                    if (file) handleFileUpload(file);
+                    else showToast('请先选择MP3文件');
+                });
+
+                // 试用按钮
+                $('#btnTrial').addEventListener('click', () => {
+                    showToast('感谢关注！试用模式已激活，尽情体验吧 ✨', 2500);
+                });
+                $('#trialBadge').addEventListener('click', () => {
+                    const startDate = new Date(state.trialStartDate);
+                    const daysPassed = Math.floor((Date.now() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+                    showToast(`试用已开始 ${daysPassed} 天。功能无限制，请放心使用。`, 2500);
+                });
+
+                // 进度条点击
+                $('#progressBar').addEventListener('click', (e) => {
+                    if (!state.isTTSMode && state.audioElement && state.totalDuration > 0) {
+                        const rect = $('#progressBar').getBoundingClientRect();
+                        const pct = (e.clientX - rect.left) / rect.width;
+                        const newTime = pct * state.totalDuration;
+                        state.audioElement.currentTime = Math.max(0, Math.min(newTime, state
+                        .totalDuration));
+                        $('#progressFill').style.width = (pct * 100) + '%';
+                    }
+                });
+            }
+
+            function updateVocabList() {
+                const container = $('#vocabList');
+                if (state.vocabList.length === 0) {
+                    container.innerHTML = '<div class="empty-state">📭 生词本为空，完成听写后可以添加生词</div>';
+                } else {
+                    container.innerHTML = state.vocabList.map((v, i) => `
+                        <div class="list-item">
+                            <span><strong>${escapeHTML(v.word)}</strong></span>
+                            <span style="font-size:0.75rem;color:var(--text-muted);">${new Date(v.date).toLocaleDateString()}</span>
+                            <button class="delete-btn" data-index="${i}">删除</button>
+                        </div>
+                    `).join('');
+                    container.querySelectorAll('.delete-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const idx = parseInt(btn.dataset.index);
+                            state.vocabList.splice(idx, 1);
+                            saveAllData();
+                            updateVocabList();
+                        });
+                    });
+                }
+            }
+
+            function updateSentencesList() {
+                const container = $('#sentencesList');
+                if (state.sentencesCollection.length === 0) {
+                    container.innerHTML = '<div class="empty-state">⭐ 暂无收藏句子，听写时点击"收藏当前句子"即可</div>';
+                } else {
+                    container.innerHTML = state.sentencesCollection.map((s, i) => `
+                        <div class="list-item">
+                            <div style="flex:1;">
+                                <span>${escapeHTML(s.text)}</span>
+                                <br><small style="color:var(--text-muted);">来源：${escapeHTML(s.source)} | ${new Date(s.date).toLocaleDateString()}</small>
+                            </div>
+                            <button class="delete-btn" data-index="${i}">删除</button>
+                        </div>
+                    `).join('');
+                    container.querySelectorAll('.delete-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const idx = parseInt(btn.dataset.index);
+                            state.sentencesCollection.splice(idx, 1);
+                            saveAllData();
+                            updateSentencesList();
+                        });
+                    });
+                }
+            }
+
+            function updateHistoryList() {
+                const container = $('#historyList');
+                if (state.historyList.length === 0) {
+                    container.innerHTML = '<div class="empty-state">📋 暂无听力记录，完成批改后自动记录</div>';
+                } else {
+                    container.innerHTML = state.historyList.map((h, i) => `
+                        <div class="list-item">
+                            <div style="flex:1;">
+                                <strong>${escapeHTML(h.materialTitle)}</strong>
+                                <span style="margin-left:8px;font-weight:600;color:${h.accuracy>=90?'var(--success)':h.accuracy>=70?'var(--warning)':'var(--danger)'};">${h.accuracy}%</span>
+                                <br><small style="color:var(--text-muted);">${new Date(h.date).toLocaleString()}</small>
+                            </div>
+                            <button class="delete-btn" data-index="${i}">删除</button>
+                        </div>
+                    `).join('');
+                    container.querySelectorAll('.delete-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const idx = parseInt(btn.dataset.index);
+                            state.historyList.splice(idx, 1);
+                            saveAllData();
+                            updateHistoryList();
+                        });
+                    });
+                }
+            }
+
+            // ==================== 初始化 ====================
+            function init() {
+                loadAllData();
+                bindEvents();
+                refreshLocalMaterialsList();
+                updateVocabList();
+                updateSentencesList();
+                updateHistoryList();
+                updateSpeedButtons();
+                // 确保语音合成准备就绪
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.getVoices();
+                    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+                }
+                // 加载默认素材
+                loadMaterial('gaokao');
+                // 初始句子指示器
+                updateSentenceIndicator();
+                $('#loopCount').value = state.loopCount;
+            }
+
+            // 启动应用
+            document.addEventListener('DOMContentLoaded', init);
+
+            console.log('🎧 疯狂听抄 - 应用已就绪');
+            console.log('⌨️ 快捷键：空格键=播放/暂停 | Ctrl+→=下一句 | Ctrl+←=上一句');
+            console.log('📂 支持上传本地MP3文件（10MB以内）');
+            console.log('🌐 内置素材使用浏览器TTS语音合成');
+        })();
+    </script>
+</body>
+</html>
